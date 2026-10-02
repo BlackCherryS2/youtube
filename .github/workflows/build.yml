@@ -4,9 +4,6 @@ on:
   push:
     branches:
       - main
-  pull_request:
-    branches:
-      - main
   workflow_dispatch:
 
 jobs:
@@ -17,29 +14,29 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Extract project
+        run: |
+          mkdir -p app
+          unzip -q yt-pulse-github.zip -d app
+          echo "=== PROJECT FILES ==="
+          find app -maxdepth 2 -type f | sort
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
 
-      - name: Check repository
-        run: |
-          echo "=== ROOT ==="
-          ls -la
-          echo "=== CLIENT ==="
-          ls -la client
-
-      - name: Install client dependencies
-        working-directory: ./client
+      - name: Install dependencies
+        working-directory: ./app/client
         run: npm install
 
-      - name: Build client
-        working-directory: ./client
+      - name: Build application
+        working-directory: ./app/client
         run: npm run build
 
       - name: Upload build
         uses: actions/upload-artifact@v4
         with:
           name: yt-pulse-web
-          path: client/dist
+          path: app/client/dist
           if-no-files-found: error
