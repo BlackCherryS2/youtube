@@ -22,10 +22,19 @@ jobs:
         with:
           node-version: 20
 
-      - name: Install dependencies
+      - name: Check repository
+        run: |
+          echo "=== ROOT ==="
+          ls -la
+          echo "=== CLIENT ==="
+          ls -la client
+
+      - name: Install client dependencies
+        working-directory: ./client
         run: npm install
 
-      - name: Build application
+      - name: Build client
+        working-directory: ./client
         run: npm run build
 
       - name: Upload build
